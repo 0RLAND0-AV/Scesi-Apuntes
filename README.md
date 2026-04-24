@@ -33,3 +33,31 @@ En el editor:
 - La primera línea debe ser el título del commit usando un prefijo (ej: feat, fix, docs, etc.).
 - Luego se deja una línea en blanco.
 - A partir de la tercera línea se escribe el cuerpo del commit, donde se explica con más detalle qué cambios se hicieron y por qué.
+
+## Apuntes Git dia Miercoles 22/04/2026
+Vimos github, creacion de cuentas en github, login creacion de repositorios remotos, conexion via ssh.
+Comandos utiles:
+Comando para crear clave ssh:
+```
+ssh-keygen -t ed25519 -C “tu-correo@email.com”
+```
+```
+cat ~/.ssh/id_ed25519.pub
+```
+
+Copias el contenido del anteroir comando y te diriges a github donde te diriges a tu perfil → Settings y luego SSH y GPG Keys y luego “New SSH Key” (1) y pegas tu key, le das un nombre para tu PC y click en “Add SSH Key”. (2)
+
+Comando para verificar que tu git local este conectado a tu cuenta github:
+```
+ssh -T git@github.com
+```
+
+Comando para conectar un repositorio local a un repositorio remoto(NUEVO)
+```
+git remote add origin git@github.com:TuUser/TuRepo.git
+
+git branch -M main
+
+git push -u origin main
+```
+Luego vimos los tipicos comandos git push, git pull, para especificar alguna rama se usa el "origin" depsues del push/pull
