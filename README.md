@@ -61,3 +61,163 @@ git branch -M main
 git push -u origin main
 ```
 Luego vimos los tipicos comandos git push, git pull, para especificar alguna rama se usa el "origin" depsues del push/pull
+
+PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui teien eun ejemplo "Apuntes git dia Miercoles......"
+
+## Apuntes Git día Jueves 23/04/2026
+PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui teien eun ejemplo "Apuntes git dia Miercoles......"
+
+Hoy vimos temas más avanzados: **git remote**, manejo de **múltiples cuentas con SSH**, configuraciones locales y **git checkout** (navegación en la historia).
+
+---
+
+### 🔹 Git Remote (repositorios remotos)
+
+Sirve para gestionar a dónde se conecta tu repo local (como GitHub).
+
+Comandos útiles:
+
+```
+git remote -v
+```
+
+Muestra las URLs configuradas
+
+```
+git remote add <apodo> "url"
+```
+
+Conecta tu repo local con uno remoto
+
+```
+git remote set-url <apodo> "url"
+```
+
+Cambia la URL del remoto
+
+---
+
+### 🔹 Múltiples cuentas con SSH
+
+Si tienes más de una cuenta, necesitas **una llave SSH por cuenta**.
+
+Crear nueva key:
+
+```
+ssh-keygen -t ed25519 -C "correo" -f ~/.ssh/id_nombre
+```
+
+Configurar archivo:
+
+```
+~/.ssh/config
+```
+
+Ejemplo:
+
+```
+# Cuenta principal
+Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_ed25519
+
+# Segunda cuenta
+Host github-nombre
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_nombre
+```
+
+Verificar:
+
+```
+ssh -T git@github-nombre
+```
+
+---
+
+### 🔹 Clonar usando el host correcto
+
+IMPORTANTE: usar el alias configurado
+
+```
+git clone git@github-nombre:usuario/repositorio.git
+```
+
+---
+
+### 🔹 Configuraciones locales
+
+Se aplican solo al repo actual (no globales):
+
+```
+git config user.name "Tu nombre"
+git config user.email "tu correo"
+```
+
+---
+
+### 🔹 Git Checkout
+
+Permite moverte entre ramas o commits.
+
+```
+git checkout <rama>
+```
+
+Cambiar de rama
+
+```
+git checkout <hash>
+```
+
+Ir a un commit antiguo
+
+Usos:
+
+* Ver código del pasado
+* Recuperar archivos
+* Probar cambios
+* Cambiar de rama
+
+---
+
+### 🔹 Detached HEAD
+
+Estado donde NO estás en una rama, sino en un commit.
+
+⚠️ Si haces cambios aquí, se pueden perder
+
+Solución:
+
+```
+git checkout -b nueva_rama
+```
+
+---
+
+### 🔹 Ir y volver entre commits
+
+```
+git checkout <hash>
+```
+
+Ir al pasado
+
+```
+git checkout main
+```
+
+Volver a la rama actual
+
+---
+
+### 🔹 Buenas prácticas
+
+* Hacer commit antes de moverte
+* No trabajar mucho en detached HEAD
+* Crear ramas para experimentar
+* Mantener limpio el proyecto
+
+---
