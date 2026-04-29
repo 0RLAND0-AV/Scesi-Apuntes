@@ -62,10 +62,9 @@ git push -u origin main
 ```
 Luego vimos los tipicos comandos git push, git pull, para especificar alguna rama se usa el "origin" depsues del push/pull
 
-PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui teien eun ejemplo "Apuntes git dia Miercoles......"
 
 ## Apuntes Git día Jueves 23/04/2026
-PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui teien eun ejemplo "Apuntes git dia Miercoles......"
+PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Miercoles......"
 
 Hoy vimos temas más avanzados: **git remote**, manejo de **múltiples cuentas con SSH**, configuraciones locales y **git checkout** (navegación en la historia).
 
@@ -221,3 +220,35 @@ Volver a la rama actual
 * Mantener limpio el proyecto
 
 ---
+
+## Apuntes Git día Lunes 27/04/2026
+PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Jueves......"
+
+Lunes se aprendio sobre ramas y Gitflow básico para trabajar de forma más ordenada en equipo.
+
+Vimos cómo crear, listar y eliminar ramas usando:
+
+```bash
+git branch
+git branch <rama>
+git branch -D <rama>
+```
+
+También aprendimos a movernos entre ramas y crear ramas nuevas directamente con:
+
+```bash
+git checkout <rama>
+git checkout -b <rama>
+```
+
+El auxi explicó la diferencia entre `git checkout` y `git switch`, donde `git switch` es más seguro y moderno para trabajar únicamente con ramas.
+
+Finalmente vimos Gitflow básico y las ramas principales:
+
+* `main`: contiene el código en producción.
+* `develop`: rama donde se integran los cambios en desarrollo.
+* `feature/*`: para desarrollar nuevas funcionalidades.
+* `release/*`: para preparar nuevas versiones.
+* `hotfix/*`: para arreglar errores urgentes en producción.
+
+También aprendimos buenas prácticas para mantener el proyecto más organizado y fácil de trabajar en equipo.
