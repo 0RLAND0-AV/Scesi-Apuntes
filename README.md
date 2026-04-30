@@ -252,3 +252,134 @@ Finalmente vimos Gitflow básico y las ramas principales:
 * `hotfix/*`: para arreglar errores urgentes en producción.
 
 También aprendimos buenas prácticas para mantener el proyecto más organizado y fácil de trabajar en equipo.
+
+## Apuntes Git día Martes 28/04/2026
+PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Lunes......"
+
+Hoy aprendí sobre `git merge`, `git fetch`, `git pull`, `git push` y el flujo de trabajo sin Pull Requests cuando el developer ya es colaborador del repositorio.
+
+### 🔹 Git Merge
+
+`git merge` sirve para fusionar ramas y combinar sus commits en una sola historia.
+
+```bash
+git merge rama
+```
+
+También vimos el flag:
+
+```bash
+git merge --no-ff rama
+```
+## Configurar globalmente el --no-f
+```bash
+git config --global merge.ff false
+```
+
+El `--no-ff` fuerza la creación de un commit de merge para no perder el historial de ramas, incluso si Git puede hacer fast-forward.
+
+---
+
+### 🔹 Git Fetch
+
+`git fetch` permite verificar si hubo cambios en el repositorio remoto sin descargarlos directamente a tu rama actual.
+
+```bash
+git fetch
+```
+
+---
+
+### 🔹 Git Pull
+
+`git pull` trae y descarga los cambios del repositorio remoto.
+
+```bash
+git pull origin rama
+```
+
+Aprendimos que es recomendable especificar `origin` y la rama para evitar errores.
+
+---
+
+### 🔹 Git Push
+
+`git push` sube nuestros commits al repositorio remoto.
+
+```bash
+git push origin rama
+```
+
+Si es la primera vez que subimos una rama al repositorio remoto se usa:
+
+```bash
+git push -u origin rama
+```
+
+Esto vincula la rama local con la remota.
+
+---
+
+### 🔹 Flujo de trabajo sin Pull Requests
+
+Vimos el flujo de trabajo cuando el developer ya es colaborador y no necesita hacer Pull Request.
+
+Primero actualizamos `develop`:
+
+```bash
+git checkout develop
+git fetch
+git pull origin develop
+```
+
+Luego cambiamos o creamos nuestra rama:
+
+```bash
+git checkout rama
+```
+
+o
+
+```bash
+git checkout -b rama
+```
+
+Si hubo cambios en `develop`, fusionamos:
+
+```bash
+git merge develop
+```
+
+Después trabajamos normalmente y subimos cambios:
+
+```bash
+git push origin rama
+```
+
+Finalmente fusionamos nuestra rama en `develop`:
+
+```bash
+git checkout develop
+git fetch
+git pull origin develop
+git merge --no-ff rama
+```
+
+Si aparecen conflictos, los resolvemos manualmente y luego:
+
+```bash
+git add .
+git commit
+```
+
+Por último eliminamos la rama:
+
+```bash
+git branch -D rama
+```
+
+y subimos los cambios finales:
+
+```bash
+git push origin develop
+```
