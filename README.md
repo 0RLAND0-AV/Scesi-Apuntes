@@ -383,3 +383,118 @@ y subimos los cambios finales:
 ```bash
 git push origin develop
 ```
+
+## Apuntes Git día Miércoles 29/04/2026
+
+PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Martes, En este caso trata de explicarlo tambien con configuracion de Github para aprobar o no PR"
+
+Hoy aprendí a trabajar profesionalmente con Pull Requests (PRs) en GitHub y la diferencia respecto al flujo anterior sin PRs.
+
+A diferencia del día lunes, ahora configuramos el repositorio en GitHub usando ramas como `main` y `develop`, además de configurar `Rulesets` y aprobaciones obligatorias (`Required approvals`) para proteger el repositorio y controlar quién puede hacer merges.
+
+También dejamos otras configuraciones por defecto para mantener un flujo de trabajo más seguro y ordenado.
+
+---
+
+### 🔹 ¿Qué son los Pull Requests?
+
+Los Pull Requests (PRs) son solicitudes para fusionar cambios de una rama hacia otra. Permiten revisar el código antes de integrarlo al proyecto principal.
+
+Es la forma profesional de trabajar en equipo con Git y GitHub.
+
+Cuando hacemos:
+
+```bash
+git push origin rama
+```
+
+Luego debemos ir a GitHub y crear el Pull Request desde la interfaz web.
+
+---
+
+### 🔹 Flujo de trabajo con Pull Requests
+
+Primero actualizamos `develop`:
+
+```bash
+git checkout develop
+git fetch
+git pull origin develop
+```
+
+Luego entramos o creamos nuestra rama:
+
+```bash
+git checkout rama
+```
+
+o
+
+```bash
+git checkout -b rama
+```
+
+Si `develop` tuvo cambios recientes:
+
+```bash
+git merge develop
+```
+
+Después trabajamos normalmente y subimos nuestros cambios:
+
+```bash
+git push origin rama
+```
+
+Antes de hacer el PR también debemos asegurarnos de que nuestra rama esté actualizada:
+
+```bash
+git checkout develop
+git fetch
+git checkout rama
+git merge develop
+```
+
+Si existen conflictos, los resolvemos manualmente:
+
+```bash
+git add .
+git commit
+git push origin rama
+```
+
+Finalmente seguimos el proceso de creación del Pull Request en GitHub.
+
+---
+
+### 🔹 ¿Por qué usar Pull Requests?
+
+Aunque ya podemos trabajar sin PRs, los Pull Requests agregan seguridad y control al proyecto.
+
+Permiten:
+
+- Revisar cambios antes del merge
+- Pedir aprobación del equipo
+- Evitar código incorrecto o malicioso
+- Generar discusión y feedback
+- Mantener un mejor control grupal del repositorio
+
+También ayudan a saber:
+- qué cambios se harán
+- quién los hizo
+- qué impacto tendrán
+
+---
+
+### 🔹 Protección del repositorio
+
+Aprendimos que no basta con confiar en los colaboradores, también debemos limitar permisos usando configuraciones de GitHub como:
+
+- Rulesets
+- Protección de ramas
+- Required approvals
+- Restricción de merges directos a `main`
+
+Esto obliga a usar Pull Requests antes de fusionar cambios importantes.
+
+---
