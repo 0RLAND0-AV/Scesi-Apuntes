@@ -1,586 +1,669 @@
-# Apuntes de las clases de GIT-GITHUB con el Auxigood Isac
-## Apuntes Git dia Lunes 20/04/2026
-El auxi nos conto del chisme de Linus Torvals, creo Linux para hacerle frente a programas de paga que cobraban por gestionar versiones de un proyecto
-Comandos de configuracion:
+# Apuntes de Git & GitHub
+### Clase con el Auxigood Isac — Abril/Mayo 2026
+
+![Git](https://img.shields.io/badge/Git-2.x-F05032?style=flat-square&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
+![Estado](https://img.shields.io/badge/Estado-En%20curso-green?style=flat-square)
+
+> Registro completo de comandos, conceptos y flujos de trabajo vistos en clase. Desde configuración inicial hasta Pull Requests y Gitflow profesional.
+
+---
+
+## Tabla de Contenidos
+
+- [Lun 20/04 — Configuración inicial](#lunes-2004--configuración-inicial-de-git)
+- [Mar 21/04 — Estados, Commits y .gitignore](#martes-2104--estados-commits-y-gitignore)
+- [Mié 22/04 — GitHub y SSH](#miércoles-2204--github-y-conexión-ssh)
+- [Jue 23/04 — Git Remote, múltiples SSH y Checkout](#jueves-2304--git-remote-múltiples-cuentas-ssh-y-checkout)
+- [Lun 27/04 — Ramas y Gitflow](#lunes-2704--ramas-y-gitflow)
+- [Mar 28/04 — Merge, Fetch, Pull y Push](#martes-2804--merge-fetch-pull-push-y-flujo-sin-pr)
+- [Mié 29/04 — Pull Requests](#miércoles-2904--pull-requests-y-protección-de-ramas)
+- [Jue 30/04 — Stash y Diff](#jueves-3004--git-stash-y-git-diff)
+- [Cheatsheet general](#cheatsheet-general)
+
+---
+
+## Lunes 20/04 — Configuración inicial de Git
+
+### Origen de Git y por qué existe
+
+**Linus Torvalds** creó Git en 2005 como respuesta a la cancelación de la licencia gratuita de *BitKeeper*, el software de control de versiones que usaba el kernel de Linux. No quería depender de herramientas propietarias de pago, así que en dos semanas construyó su propio sistema: rápido, distribuido y libre.
+
+> **Git ≠ GitHub.** Git es el sistema de control de versiones que corre en tu computadora. GitHub es una plataforma web que aloja repositorios Git remotos y agrega funciones de colaboración. Son cosas distintas.
+
+---
+
+### Comandos de configuración global
+
+La configuración global se guarda en `~/.gitconfig` y aplica a todos tus repositorios.
+
+```bash
+# Identificarte para que tus commits muestren tu nombre
+git config --global user.name  "TU_USER_NAME"
+git config --global user.email "TU_EMAIL"
+
+# Corregir saltos de línea entre Windows (CRLF) y Linux/Mac (LF)
+git config --global core.autocrlf true   # En Windows
+git config --global core.autocrlf input  # En Linux/Mac
+
+# Ver toda tu configuración actual
+git config --list
+```
+
+| Opción | Dónde aplica |
+|--------|--------------|
+| `--global` | Todos los repositorios del usuario actual |
+| `--local` | Solo el repositorio actual (sobrescribe al global) |
+| `--system` | Todos los usuarios del sistema operativo |
+
+---
+
+## Martes 21/04 — Estados, Commits y .gitignore
+
+### Los 3 estados de Git
+
+Git maneja tus archivos en tres zonas distintas. Entender esto es fundamental.
 
 ```
-git config --global user.name "TU_USER_NAME" //Debes indetificarte al momento de hacer commits
-git config --global user.email "TU_EMAIL"   //Debes indetificarte al momento de hacer commits
-git config --global core.autocrlf true  //Sirve para corregir saltos de linea en Windos/Linux/Mac
+┌─────────────────────┐        ┌─────────────────────┐        ┌─────────────────────┐
+│   Working Directory │        │    Stage (Index)     │        │     Repository      │
+│                     │──────▶ │                      │──────▶ │                     │
+│  Archivos editados  │git add │  Cambios preparados  │ commit │  Historial de commits│
+│  (sin confirmar)    │        │  para confirmar      │        │  (.git/)            │
+└─────────────────────┘        └─────────────────────┘        └─────────────────────┘
 ```
-## Apuntes Git dia Martes 21/04/2026
-Vimos los estados de Git, working, stage y confirmado.
-comando para agregar archivos al stage
-```
-git add . //el punto agrega todo los arhcivos modificados al stage, opcionalkmente puede seleccionar solo el archivo que quieras agregar al stage escribes la ruta inicial del archivo lo completas con tabs.
-```
-Comando para resturar del stage:
-```
-git restore --staged . //el punto restaura todos los archivos del stage, opcionalkmente puede seleccionar solo el archivo que quieras restauras escribes la ruta inicial del archivo lo completas con tabs.
-```
-Comando para hacer commit(Confirmar los cambios)
-```
-git commit -m "Mensaje descriptivo de los cambios que hiciste, se recomienda usar prefijos add,fix,feat,etc." //Para ver prefijos revisar PDF, o buscar en internet GIT FLOW
-```
-Vimos el .gitignore, en este archivo pones los archivos, directorios o tipos de archivos en especifico(Segun su extension, ejemplo: .java, .py, .Ts...etc) para que git los ignore, osea que no seguira los cambios que se hagan en esos archivos del .gitignore.
 
-Tambien vimos los commits con cuerpo, se usan para cuando queramos poner una descripcion mas larga de los cambios que hicimos
-comando:
-```
-git commit //Se abre el editor configurado Nano o VIM.
-```
-En el editor:
-- La primera línea debe ser el título del commit usando un prefijo (ej: feat, fix, docs, etc.).
-- Luego se deja una línea en blanco.
-- A partir de la tercera línea se escribe el cuerpo del commit, donde se explica con más detalle qué cambios se hicieron y por qué.
+```bash
+# Ver estado actual de tus archivos
+git status
 
-## Apuntes Git dia Miercoles 22/04/2026
-Vimos github, creacion de cuentas en github, login creacion de repositorios remotos, conexion via ssh.
-Comandos utiles:
-Comando para crear clave ssh:
+# Agregar TODOS los archivos modificados al stage
+git add .
+
+# Agregar un archivo específico al stage
+git add src/miarchivo.js
+
+# Sacar TODOS los archivos del stage (vuelven a Working)
+git restore --staged .
+
+# Sacar un archivo específico del stage
+git restore --staged src/miarchivo.js
+
+# Descartar cambios en Working Directory (irreversible)
+git restore src/miarchivo.js
 ```
-ssh-keygen -t ed25519 -C “tu-correo@email.com”
+
+---
+
+### Commits — Confirmando cambios
+
+Un commit es una *fotografía* del estado de tu proyecto en un momento dado. Se recomienda usar **prefijos convencionales** en el mensaje.
+
+```bash
+# Commit rápido con mensaje corto
+git commit -m "feat: agregar login de usuario"
+
+# Commit con cuerpo extenso (abre Nano o VIM)
+git commit
+
+# Modificar el ÚLTIMO commit (solo antes de hacer push)
+git commit --amend -m "fix: corregir validación de email"
+
+# Ver historial visual de commits
+git log --oneline --graph --all
 ```
+
+#### Prefijos convencionales (Conventional Commits)
+
+| Prefijo | Cuándo usarlo |
+|---------|---------------|
+| `feat:` | Nueva funcionalidad |
+| `fix:` | Corrección de un bug |
+| `docs:` | Cambios en documentación |
+| `style:` | Formato, espacios, comas (sin cambio de lógica) |
+| `refactor:` | Refactorización de código existente |
+| `test:` | Agregar o modificar tests |
+| `chore:` | Tareas de mantenimiento, dependencias |
+
+> Para más detalle buscar en internet: **Conventional Commits** o **Git Flow prefixes**.
+
+#### Commits con cuerpo (descripción larga)
+
+Cuando el mensaje corto no es suficiente, se abre el editor con `git commit` y se escribe así:
+
 ```
+feat: implementar autenticación con JWT
+                                         ← línea en blanco OBLIGATORIA
+Se agrega sistema de login usando JSON Web Tokens.
+- Validación de usuario y contraseña en /api/auth/login
+- Token expira en 24 horas
+- Se agrega middleware de protección de rutas
+```
+
+La primera línea es el **título**, luego una línea en blanco, y a partir de la tercera línea va el **cuerpo** con la explicación detallada.
+
+---
+
+### El archivo `.gitignore`
+
+En `.gitignore` declaras los archivos que Git debe ignorar completamente: dependencias, variables de entorno, archivos compilados, etc.
+
+```gitignore
+# Carpeta de dependencias Node.js
+node_modules/
+
+# Variables de entorno (NUNCA subir al repo)
+.env
+.env.local
+
+# Archivos compilados
+dist/
+build/
+*.class
+*.pyc
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+```
+
+> **Importante:** Si ya hiciste commit de un archivo que debería ignorarse, necesitas ejecutar `git rm --cached <archivo>` para dejar de rastrearlo sin borrarlo de tu disco.
+
+---
+
+## Miércoles 22/04 — GitHub y conexión SSH
+
+### Por qué SSH y no HTTPS
+
+SSH (Secure Shell) crea un canal cifrado entre tu computadora y GitHub usando un par de llaves criptográficas. Una vez configurado **no necesitas escribir usuario/contraseña** en cada push o pull.
+
+#### Pasos para configurar SSH
+
+```bash
+# 1. Generar tu llave SSH con el algoritmo ED25519 (moderno y seguro)
+ssh-keygen -t ed25519 -C "tu-correo@email.com"
+
+# 2. Mostrar tu llave pública para copiarla
 cat ~/.ssh/id_ed25519.pub
 ```
 
-Copias el contenido del anteroir comando y te diriges a github donde te diriges a tu perfil → Settings y luego SSH y GPG Keys y luego “New SSH Key” (1) y pegas tu key, le das un nombre para tu PC y click en “Add SSH Key”. (2)
+3. En GitHub: **Perfil → Settings → SSH and GPG keys → New SSH Key**, pegar el contenido, darle un nombre y guardar.
 
-Comando para verificar que tu git local este conectado a tu cuenta github:
-```
+```bash
+# 4. Verificar que la conexión funciona
 ssh -T git@github.com
+# Respuesta esperada: Hi TuUser! You've successfully authenticated...
 ```
-
-Comando para conectar un repositorio local a un repositorio remoto(NUEVO)
-```
-git remote add origin git@github.com:TuUser/TuRepo.git
-
-git branch -M main
-
-git push -u origin main
-```
-Luego vimos los tipicos comandos git push, git pull, para especificar alguna rama se usa el "origin" depsues del push/pull
-
-
-## Apuntes Git día Jueves 23/04/2026
-PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Miercoles......"
-
-Hoy vimos temas más avanzados: **git remote**, manejo de **múltiples cuentas con SSH**, configuraciones locales y **git checkout** (navegación en la historia).
 
 ---
 
-### 🔹 Git Remote (repositorios remotos)
+### Conectar repositorio local con GitHub (primer push)
 
-Sirve para gestionar a dónde se conecta tu repo local (como GitHub).
+```bash
+# Vincular tu repo local con el remoto
+git remote add origin git@github.com:TuUser/TuRepo.git
 
-Comandos útiles:
+# Renombrar la rama principal a "main"
+git branch -M main
 
-```
+# Subir por primera vez y vincular la rama
+git push -u origin main
+
+# Verificar los remotos configurados
 git remote -v
 ```
 
-Muestra las URLs configuradas
+---
 
-```
+## Jueves 23/04 — Git Remote, múltiples cuentas SSH y Checkout
+
+### Git Remote — Gestionar repositorios remotos
+
+```bash
+# Ver las URLs configuradas
+git remote -v
+
+# Conectar repo local con uno remoto
 git remote add <apodo> "url"
-```
 
-Conecta tu repo local con uno remoto
-
-```
+# Cambiar la URL de un remoto existente
 git remote set-url <apodo> "url"
-```
 
-Cambia la URL del remoto
+# Eliminar un remoto
+git remote remove <apodo>
+```
 
 ---
 
-### 🔹 Múltiples cuentas con SSH
+### Múltiples cuentas GitHub con SSH
 
-Si tienes más de una cuenta, necesitas **una llave SSH por cuenta**.
+Si tienes cuenta personal y de trabajo, necesitas **una llave SSH por cuenta** y configurar un alias en `~/.ssh/config`.
 
-Crear nueva key:
-
-```
-ssh-keygen -t ed25519 -C "correo" -f ~/.ssh/id_nombre
-```
-
-Configurar archivo:
-
-```
-~/.ssh/config
+```bash
+# Crear llave para la segunda cuenta
+ssh-keygen -t ed25519 -C "trabajo@empresa.com" -f ~/.ssh/id_trabajo
 ```
 
-Ejemplo:
+Configurar el archivo `~/.ssh/config`:
 
 ```
 # Cuenta principal
 Host github.com
-HostName github.com
-User git
-IdentityFile ~/.ssh/id_ed25519
+  HostName     github.com
+  User         git
+  IdentityFile ~/.ssh/id_ed25519
 
-# Segunda cuenta
-Host github-nombre
-HostName github.com
-User git
-IdentityFile ~/.ssh/id_nombre
+# Segunda cuenta (alias personalizado)
+Host github-trabajo
+  HostName     github.com
+  User         git
+  IdentityFile ~/.ssh/id_trabajo
 ```
 
-Verificar:
+```bash
+# Verificar la segunda cuenta
+ssh -T git@github-trabajo
 
-```
-ssh -T git@github-nombre
-```
+# Clonar usando el alias configurado
+git clone git@github-trabajo:empresa/repositorio.git
 
----
-
-### 🔹 Clonar usando el host correcto
-
-IMPORTANTE: usar el alias configurado
-
-```
-git clone git@github-nombre:usuario/repositorio.git
+# Config local del repo para la segunda cuenta (no global)
+git config user.name  "Nombre Trabajo"
+git config user.email "yo@empresa.com"
 ```
 
 ---
 
-### 🔹 Configuraciones locales
+### Git Checkout — Navegar el historial
 
-Se aplican solo al repo actual (no globales):
+| Comando | Descripción |
+|---------|-------------|
+| `git checkout <rama>` | Cambiar a una rama existente |
+| `git checkout <hash>` | Ir a un commit específico del pasado |
+| `git checkout -b <rama>` | Crear nueva rama y cambiarse a ella |
+| `git checkout main` | Volver a la rama principal |
 
-```
-git config user.name "Tu nombre"
-git config user.email "tu correo"
-```
+```bash
+# Ir a un commit antiguo
+git checkout abc1234
 
----
-
-### 🔹 Git Checkout
-
-Permite moverte entre ramas o commits.
-
-```
-git checkout <rama>
-```
-
-Cambiar de rama
-
-```
-git checkout <hash>
-```
-
-Ir a un commit antiguo
-
-Usos:
-
-* Ver código del pasado
-* Recuperar archivos
-* Probar cambios
-* Cambiar de rama
-
----
-
-### 🔹 Detached HEAD
-
-Estado donde NO estás en una rama, sino en un commit.
-
-⚠️ Si haces cambios aquí, se pueden perder
-
-Solución:
-
-```
-git checkout -b nueva_rama
-```
-
----
-
-### 🔹 Ir y volver entre commits
-
-```
-git checkout <hash>
-```
-
-Ir al pasado
-
-```
+# Volver a la rama actual
 git checkout main
 ```
 
-Volver a la rama actual
-
 ---
 
-### 🔹 Buenas prácticas
+### Estado Detached HEAD
 
-* Hacer commit antes de moverte
-* No trabajar mucho en detached HEAD
-* Crear ramas para experimentar
-* Mantener limpio el proyecto
+Cuando haces `git checkout <hash>` quedas en un estado especial: **Detached HEAD**. No estás en ninguna rama, estás directamente apuntando a un commit.
 
----
+> ⚠️ Si haces commits en Detached HEAD, esos cambios pueden perderse cuando vuelvas a una rama normal.
 
-## Apuntes Git día Lunes 27/04/2026
-PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Jueves......"
-
-Lunes se aprendio sobre ramas y Gitflow básico para trabajar de forma más ordenada en equipo.
-
-Vimos cómo crear, listar y eliminar ramas usando:
+Solución: crear una rama nueva antes de trabajar:
 
 ```bash
+git checkout -b nueva-rama-experimental
+```
+
+**Buenas prácticas:**
+
+- Hacer commit antes de moverte entre ramas
+- No trabajar mucho tiempo en estado Detached HEAD
+- Crear ramas nuevas para experimentar
+- Usar `git switch` en lugar de `git checkout` para mayor claridad
+
+---
+
+## Lunes 27/04 — Ramas y Gitflow
+
+### Comandos esenciales de ramas
+
+```bash
+# Listar ramas locales
 git branch
-git branch <rama>
-git branch -D <rama>
+
+# Listar ramas locales Y remotas
+git branch -a
+
+# Crear nueva rama (sin cambiarse)
+git branch feature/login
+
+# Cambiarse a una rama (forma clásica)
+git checkout feature/login
+
+# Crear y cambiarse en un solo comando
+git checkout -b feature/login
+
+# Forma moderna y más segura (solo para ramas)
+git switch feature/login
+git switch -c feature/login   # crear + cambiarse
+
+# Eliminar rama ya mergeada
+git branch -d feature/login
+
+# Forzar eliminación
+git branch -D feature/login
+
+# Renombrar la rama actual
+git branch -m nuevo-nombre
 ```
 
-También aprendimos a movernos entre ramas y crear ramas nuevas directamente con:
+> **`git checkout` vs `git switch`:** `git switch` fue introducido en Git 2.23 para trabajar exclusivamente con ramas. Es más seguro porque no permite ir a commits sueltos accidentalmente.
 
-```bash
-git checkout <rama>
-git checkout -b <rama>
+---
+
+### Gitflow — Flujo de trabajo profesional por ramas
+
+Gitflow es una convención que organiza el trabajo en equipo usando ramas con nombres y propósitos bien definidos.
+
+```
+         ┌─────── hotfix/xxx ────────────────────────────┐
+         │                                               │
+─────────●──────────────────────────────────────────────●──── main
+         │                                               │
+         └──●────────────────────────────────────────●───── release/x.x
+            │                                        │
+────────────●────────●──────────────────────●────────●──── develop
+                     │                      │
+                     └──── feature/xxx ─────┘
 ```
 
-El auxi explicó la diferencia entre `git checkout` y `git switch`, donde `git switch` es más seguro y moderno para trabajar únicamente con ramas.
+> Referencia visual completa: [Diagrama Gitflow original — nvie.com](https://nvie.com/img/git-model@2x.png)
 
-Finalmente vimos Gitflow básico y las ramas principales:
+#### Las 5 ramas de Gitflow
 
-* `main`: contiene el código en producción.
-* `develop`: rama donde se integran los cambios en desarrollo.
-* `feature/*`: para desarrollar nuevas funcionalidades.
-* `release/*`: para preparar nuevas versiones.
-* `hotfix/*`: para arreglar errores urgentes en producción.
+| Rama | Origen | Destino | Propósito |
+|------|--------|---------|-----------|
+| `main` | — | — | Código en **producción**. Solo recibe merges de `release/*` y `hotfix/*` |
+| `develop` | `main` | — | Rama de **integración**. Base del próximo release |
+| `feature/*` | `develop` | `develop` | Cada nueva funcionalidad. Ej: `feature/login` |
+| `release/*` | `develop` | `main` + `develop` | Preparar nueva versión: ajustes finales, changelog |
+| `hotfix/*` | `main` | `main` + `develop` | Bugs críticos en producción que no pueden esperar |
 
-También aprendimos buenas prácticas para mantener el proyecto más organizado y fácil de trabajar en equipo.
+---
 
-## Apuntes Git día Martes 28/04/2026
-PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Lunes......"
+## Martes 28/04 — Merge, Fetch, Pull, Push y flujo sin PR
 
-Hoy aprendí sobre `git merge`, `git fetch`, `git pull`, `git push` y el flujo de trabajo sin Pull Requests cuando el developer ya es colaborador del repositorio.
-
-### 🔹 Git Merge
-
-`git merge` sirve para fusionar ramas y combinar sus commits en una sola historia.
+### Git Merge — Fusionar ramas
 
 ```bash
-git merge rama
-```
+# Merge estándar (fast-forward si es posible)
+git merge feature/login
 
-También vimos el flag:
+# Merge forzando commit de merge (--no-ff)
+# Conserva el historial visual de ramas
+git merge --no-ff feature/login
 
-```bash
-git merge --no-ff rama
-```
-## Configurar globalmente el --no-f
-```bash
+# Configurar --no-ff como comportamiento global (recomendado)
 git config --global merge.ff false
+
+# Abortar un merge con conflictos
+git merge --abort
 ```
 
-El `--no-ff` fuerza la creación de un commit de merge para no perder el historial de ramas, incluso si Git puede hacer fast-forward.
+> **Fast-forward vs --no-ff:** El fast-forward mueve el puntero de rama sin crear commit extra (historial lineal). El `--no-ff` siempre crea un commit de merge, preservando la historia visual de qué cambios vinieron de qué rama.
 
----
+#### Resolver conflictos de merge
 
-### 🔹 Git Fetch
+Los conflictos ocurren cuando dos ramas modificaron las mismas líneas de un archivo. Git marca las diferencias así:
 
-`git fetch` permite verificar si hubo cambios en el repositorio remoto sin descargarlos directamente a tu rama actual.
-
-```bash
-git fetch
+```
+<<<<<<< HEAD
+código de tu rama actual
+=======
+código de la rama que estás mergeando
+>>>>>>> feature/login
 ```
 
----
-
-### 🔹 Git Pull
-
-`git pull` trae y descarga los cambios del repositorio remoto.
-
-```bash
-git pull origin rama
-```
-
-Aprendimos que es recomendable especificar `origin` y la rama para evitar errores.
-
----
-
-### 🔹 Git Push
-
-`git push` sube nuestros commits al repositorio remoto.
-
-```bash
-git push origin rama
-```
-
-Si es la primera vez que subimos una rama al repositorio remoto se usa:
-
-```bash
-git push -u origin rama
-```
-
-Esto vincula la rama local con la remota.
-
----
-
-### 🔹 Flujo de trabajo sin Pull Requests
-
-Vimos el flujo de trabajo cuando el developer ya es colaborador y no necesita hacer Pull Request.
-
-Primero actualizamos `develop`:
-
-```bash
-git checkout develop
-git fetch
-git pull origin develop
-```
-
-Luego cambiamos o creamos nuestra rama:
-
-```bash
-git checkout rama
-```
-
-o
-
-```bash
-git checkout -b rama
-```
-
-Si hubo cambios en `develop`, fusionamos:
-
-```bash
-git merge develop
-```
-
-Después trabajamos normalmente y subimos cambios:
-
-```bash
-git push origin rama
-```
-
-Finalmente fusionamos nuestra rama en `develop`:
-
-```bash
-git checkout develop
-git fetch
-git pull origin develop
-git merge --no-ff rama
-```
-
-Si aparecen conflictos, los resolvemos manualmente y luego:
+Se edita manualmente el archivo, se deja solo lo correcto y luego:
 
 ```bash
 git add .
 git commit
 ```
 
-Por último eliminamos la rama:
+---
+
+### Fetch, Pull y Push
+
+| Comando | Descripción |
+|---------|-------------|
+| `git fetch` | Descarga cambios del remoto pero **no los aplica**. Los deja en `origin/<rama>` para revisión |
+| `git pull origin <rama>` | Hace fetch + merge automáticamente |
+| `git push origin <rama>` | Sube commits locales al repositorio remoto |
+| `git push -u origin <rama>` | Primera subida: sube y vincula la rama local con la remota |
 
 ```bash
-git branch -D rama
+git fetch
+git pull origin develop
+git push origin feature/login
+git push -u origin feature/nueva    # primera vez
 ```
 
-y subimos los cambios finales:
+> **Nota:** Preferir `git fetch` + revisar + `git merge` sobre `git pull` directo te da más control sobre los cambios antes de integrarlos.
+
+---
+
+### Flujo de trabajo sin Pull Requests (colaborador directo)
 
 ```bash
+# 1. Actualizar develop local
+git checkout develop
+git fetch
+git pull origin develop
+
+# 2. Crear o cambiar a tu rama
+git checkout -b feature/mi-funcionalidad
+
+# 3. Trabajar y hacer commits
+git add .
+git commit -m "feat: ..."
+
+# 4. Subir tu rama al remoto
+git push origin feature/mi-funcionalidad
+
+# 5. Traer últimos cambios de develop a tu rama
+git merge develop
+
+# 6. Ir a develop y mergear tu rama
+git checkout develop
+git fetch
+git pull origin develop
+git merge --no-ff feature/mi-funcionalidad
+
+# 7. Resolver conflictos si los hay, luego subir
 git push origin develop
+
+# 8. Eliminar la rama terminada
+git branch -D feature/mi-funcionalidad
 ```
-
-## Apuntes Git día Miércoles 29/04/2026
-
-PROMPT CHATGPT: Genera un resumen de esta informacion, primera persona, solo lo mas esencial, aqui tienes un ejemplo "Apuntes git dia Martes, En este caso trata de explicarlo tambien con configuracion de Github para aprobar o no PR"
-
-Hoy aprendí a trabajar profesionalmente con Pull Requests (PRs) en GitHub y la diferencia respecto al flujo anterior sin PRs.
-
-A diferencia del día lunes, ahora configuramos el repositorio en GitHub usando ramas como `main` y `develop`, además de configurar `Rulesets` y aprobaciones obligatorias (`Required approvals`) para proteger el repositorio y controlar quién puede hacer merges.
-
-También dejamos otras configuraciones por defecto para mantener un flujo de trabajo más seguro y ordenado.
 
 ---
 
-### 🔹 ¿Qué son los Pull Requests?
+## Miércoles 29/04 — Pull Requests y protección de ramas
 
-Los Pull Requests (PRs) son solicitudes para fusionar cambios de una rama hacia otra. Permiten revisar el código antes de integrarlo al proyecto principal.
+### ¿Qué es un Pull Request?
 
-Es la forma profesional de trabajar en equipo con Git y GitHub.
+Un **Pull Request (PR)** es una solicitud formal para fusionar los cambios de una rama en otra. Antes del merge, el equipo puede revisar el código, dejar comentarios y aprobar o rechazar los cambios. Es la forma profesional de trabajar en equipo.
 
-Cuando hacemos:
+> **Pull Request** en GitHub = **Merge Request** en GitLab. Mismo concepto, diferente nombre.
 
-```bash
-git push origin rama
-```
+**Por qué usar PRs:**
 
-Luego debemos ir a GitHub y crear el Pull Request desde la interfaz web.
+- Revisar código línea por línea antes de integrar
+- Generar discusión: comentarios, sugerencias, preguntas
+- Evitar errores: otro dev aprueba o rechaza los cambios
+- Registro histórico: queda documentado quién, qué y por qué
+- Bloquear merges directos a `main` o `develop`
 
 ---
 
-### 🔹 Flujo de trabajo con Pull Requests
-
-Primero actualizamos `develop`:
+### Flujo de trabajo con Pull Requests
 
 ```bash
+# 1. Actualizar develop y crear tu rama
 git checkout develop
-git fetch
 git pull origin develop
-```
+git checkout -b feature/xxx
 
-Luego entramos o creamos nuestra rama:
+# 2. Desarrollar y commitear normalmente
+git add .
+git commit -m "feat: ..."
 
-```bash
-git checkout rama
-```
-
-o
-
-```bash
-git checkout -b rama
-```
-
-Si `develop` tuvo cambios recientes:
-
-```bash
+# 3. Actualizar tu rama con cambios recientes de develop
 git merge develop
-```
 
-Después trabajamos normalmente y subimos nuestros cambios:
-
-```bash
-git push origin rama
-```
-
-Antes de hacer el PR también debemos asegurarnos de que nuestra rama esté actualizada:
-
-```bash
-git checkout develop
-git fetch
-git checkout rama
-git merge develop
-```
-
-Si existen conflictos, los resolvemos manualmente:
-
-```bash
+# 4. Resolver conflictos si los hay y subir
 git add .
 git commit
-git push origin rama
+git push origin feature/xxx
 ```
 
-Finalmente seguimos el proceso de creación del Pull Request en GitHub.
-
----
-
-### 🔹 ¿Por qué usar Pull Requests?
-
-Aunque ya podemos trabajar sin PRs, los Pull Requests agregan seguridad y control al proyecto.
-
-Permiten:
-
-- Revisar cambios antes del merge
-- Pedir aprobación del equipo
-- Evitar código incorrecto o malicioso
-- Generar discusión y feedback
-- Mantener un mejor control grupal del repositorio
-
-También ayudan a saber:
-- qué cambios se harán
-- quién los hizo
-- qué impacto tendrán
-
----
-
-### 🔹 Protección del repositorio
-
-Aprendimos que no basta con confiar en los colaboradores, también debemos limitar permisos usando configuraciones de GitHub como:
-
-- Rulesets
-- Protección de ramas
-- Required approvals
-- Restricción de merges directos a `main`
-
-Esto obliga a usar Pull Requests antes de fusionar cambios importantes.
-
----
-
-## Apuntes Git día Jueves 30/04/2026
-
-PROMPT CHATGPT: Complementa la informacion de estos comandos que vimos en clase, variaciones, repsonde en en primera persona, formato markdwon"
-
-Hoy aprendí sobre los comandos `git stash` y `git diff`, herramientas muy útiles para guardar cambios temporalmente y comparar diferencias en el código.
-
----
-
-### 🔹 Git Stash
-
-`git stash` sirve para guardar cambios temporalmente sin necesidad de hacer commit. Es útil cuando queremos cambiar de rama o actualizar el proyecto sin perder nuestro trabajo actual.
-
-Guardar cambios temporalmente:
+5. En GitHub: **"Compare & Pull Request"** → base: `develop`, compare: `feature/xxx` → Agregar título y descripción → **Create Pull Request**
+6. Esperar revisión y aprobación del equipo
+7. Una vez aprobado → Merge en GitHub → Eliminar la rama remota
 
 ```bash
+# 8. Limpiar localmente
+git checkout develop
+git pull origin develop
+git branch -D feature/xxx
+```
+
+---
+
+### Rulesets y protección de ramas en GitHub
+
+Se configura en **Settings → Branches → Rulesets** (o Branch Protection Rules).
+
+| Configuración | Descripción |
+|---------------|-------------|
+| `Require a pull request` | Nadie puede hacer push directo a la rama, obliga a usar PR |
+| `Required approvals: 1+` | El PR necesita X aprobaciones antes de mergearse |
+| `Dismiss stale reviews` | Si hay nuevos commits, las aprobaciones anteriores se invalidan |
+| `Require status checks` | Los tests de CI deben pasar antes de permitir el merge |
+| `Block force pushes` | Previene reescribir el historial en esa rama |
+| `Restrict who can merge` | Solo ciertos roles pueden aprobar merges a `main` |
+
+---
+
+## Jueves 30/04 — Git Stash y Git Diff
+
+### Git Stash — Guardar cambios temporalmente
+
+El stash es una *pila temporal* donde puedes guardar trabajo sin terminar para limpiar tu Working Directory sin necesidad de hacer commit. Útil cuando necesitas cambiar de rama de urgencia.
+
+```bash
+# Guardar cambios en el stash
 git stash
-```
 
-Guardar cambios con descripción:
+# Guardar con descripción (recomendado)
+git stash push -m "WIP: login form en progreso"
 
-```bash
-git stash push -m "algo"
-```
+# Incluir archivos nuevos (untracked) en el stash
+git stash push -u -m "con archivos nuevos"
 
-Ver la lista de stashes guardados:
-
-```bash
+# Ver lista de stashes guardados
 git stash list
-```
+# Salida: stash@{0}: ..., stash@{1}: ...
 
-Aplicar nuevamente el último stash y eliminarlo de la lista:
-
-```bash
+# Aplicar el último stash Y eliminarlo de la lista
 git stash pop
+
+# Aplicar un stash específico sin eliminarlo
+git stash apply stash@{2}
+
+# Ver qué contiene un stash sin aplicarlo
+git stash show -p stash@{0}
+
+# Eliminar un stash específico
+git stash drop stash@{1}
+
+# Limpiar TODOS los stashes
+git stash clear
 ```
 
-Aprendimos que los stashes funcionan como un almacenamiento temporal de cambios pendientes.
+> El stash funciona como una **pila (stack):** último en entrar, primero en salir (LIFO — Last In, First Out).
 
 ---
 
-### 🔹 Git Diff
+### Git Diff — Comparar diferencias
 
-`git diff` permite comparar cambios entre archivos, commits o ramas.
-
-Ver cambios actuales no staged:
+`git diff` muestra exactamente qué líneas cambiaron: las precedidas por `-` fueron eliminadas y las con `+` fueron agregadas.
 
 ```bash
+# Ver cambios en Working Directory (no staged)
 git diff
-```
 
-Comparar un archivo específico:
+# Ver cambios de un archivo específico (no staged)
+git diff src/index.js
 
-```bash
-git diff archivo
-```
-
-Ver cambios que ya están en stage:
-
-```bash
+# Ver cambios que YA están en stage
 git diff --staged
+git diff --cached   # equivalente
+
+# Ver staged de un archivo específico
+git diff --staged src/index.js
+
+# Comparar diferencias entre dos ramas
+git diff develop feature/login
+
+# Comparar dos commits
+git diff abc1234 def5678
+
+# Solo mostrar nombres de archivos que cambiaron
+git diff --name-only develop feature/login
+
+# Resumen estadístico de cambios
+git diff --stat
 ```
 
-Comparar cambios staged de un archivo específico:
-
-```bash
-git diff --staged archivo
-```
-
-Comparar diferencias entre dos ramas:
-
-```bash
-git diff rama1 rama2
-```
-
-Aprendimos que `git diff` es muy útil para revisar exactamente qué cambios hicimos antes de hacer commits o merges.
+| Zona a comparar | Comando |
+|-----------------|---------|
+| Working → último commit | `git diff` |
+| Stage → último commit | `git diff --staged` |
+| Rama A vs Rama B | `git diff ramaA ramaB` |
+| Commit A vs Commit B | `git diff hash1 hash2` |
 
 ---
 
-### 🔹 Lo más importante de la clase
+## Cheatsheet General
 
-- `git stash` guarda cambios temporalmente.
-- `git stash pop` recupera esos cambios.
-- `git diff` muestra diferencias en el código.
-- Podemos comparar archivos, staged changes y ramas completas.
-- Estas herramientas ayudan mucho a revisar y organizar mejor el trabajo antes de hacer commits.
+| Comando | Descripción |
+|---------|-------------|
+| `git init` | Inicializar repositorio local |
+| `git clone <url>` | Clonar repositorio remoto |
+| `git status` | Ver estado de archivos |
+| `git add .` | Agregar todo al stage |
+| `git restore --staged .` | Sacar todo del stage |
+| `git commit -m "..."` | Confirmar cambios con mensaje corto |
+| `git commit --amend` | Modificar el último commit |
+| `git log --oneline --graph --all` | Ver historial visual |
+| `git branch` | Listar ramas |
+| `git switch -c <rama>` | Crear y cambiarse a nueva rama |
+| `git merge --no-ff <rama>` | Fusionar ramas conservando historial |
+| `git merge --abort` | Cancelar merge en conflicto |
+| `git fetch` | Bajar cambios sin aplicar |
+| `git pull origin <rama>` | Bajar y aplicar cambios |
+| `git push origin <rama>` | Subir cambios al remoto |
+| `git push -u origin <rama>` | Subir y vincular rama nueva |
+| `git remote -v` | Ver remotos configurados |
+| `git stash push -m "..."` | Guardar trabajo en progreso |
+| `git stash pop` | Recuperar último stash |
+| `git diff --staged` | Ver cambios listos para commit |
+| `git diff <ramaA> <ramaB>` | Comparar dos ramas |
+
+---
+
+<div align="center">
+
+**Apuntes Git & GitHub** · Clase con Auxigood Isac · Abril–Mayo 2026
+
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
+
+</div>
