@@ -498,3 +498,89 @@ Aprendimos que no basta con confiar en los colaboradores, también debemos limit
 Esto obliga a usar Pull Requests antes de fusionar cambios importantes.
 
 ---
+
+## Apuntes Git día Jueves 30/04/2026
+
+PROMPT CHATGPT: Complementa la informacion de estos comandos que vimos en clase, variaciones, repsonde en en primera persona, formato markdwon"
+
+Hoy aprendí sobre los comandos `git stash` y `git diff`, herramientas muy útiles para guardar cambios temporalmente y comparar diferencias en el código.
+
+---
+
+### 🔹 Git Stash
+
+`git stash` sirve para guardar cambios temporalmente sin necesidad de hacer commit. Es útil cuando queremos cambiar de rama o actualizar el proyecto sin perder nuestro trabajo actual.
+
+Guardar cambios temporalmente:
+
+```bash
+git stash
+```
+
+Guardar cambios con descripción:
+
+```bash
+git stash push -m "algo"
+```
+
+Ver la lista de stashes guardados:
+
+```bash
+git stash list
+```
+
+Aplicar nuevamente el último stash y eliminarlo de la lista:
+
+```bash
+git stash pop
+```
+
+Aprendimos que los stashes funcionan como un almacenamiento temporal de cambios pendientes.
+
+---
+
+### 🔹 Git Diff
+
+`git diff` permite comparar cambios entre archivos, commits o ramas.
+
+Ver cambios actuales no staged:
+
+```bash
+git diff
+```
+
+Comparar un archivo específico:
+
+```bash
+git diff archivo
+```
+
+Ver cambios que ya están en stage:
+
+```bash
+git diff --staged
+```
+
+Comparar cambios staged de un archivo específico:
+
+```bash
+git diff --staged archivo
+```
+
+Comparar diferencias entre dos ramas:
+
+```bash
+git diff rama1 rama2
+```
+
+Aprendimos que `git diff` es muy útil para revisar exactamente qué cambios hicimos antes de hacer commits o merges.
+
+---
+
+### 🔹 Lo más importante de la clase
+
+- `git stash` guarda cambios temporalmente.
+- `git stash pop` recupera esos cambios.
+- `git diff` muestra diferencias en el código.
+- Podemos comparar archivos, staged changes y ramas completas.
+- Estas herramientas ayudan mucho a revisar y organizar mejor el trabajo antes de hacer commits.
